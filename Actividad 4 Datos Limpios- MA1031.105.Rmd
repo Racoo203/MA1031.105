@@ -1,0 +1,46 @@
+---
+title: "Actividad 4 - Parte 2 - MA1031.105"
+author: "Raúl Correa Ocañas"
+date: "`r Sys.Date()`"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Se obseran 8 variables y 8016 datos. Las variables son:
+
+  + Fecha: Categórica
+  + Hora: Categórica
+  + CO: 
+  + NO
+  + NO2
+  + NOX
+  + O3
+  + PM10
+  + PM25
+
+```{r}
+
+# leer CSV original
+tb = read.csv("PED2022.csv")
+
+# Remover columnas
+# tb1 = tb[,c(3,4,5,6,7,8)]
+tb = tb[,c(-1,-2)]
+
+# Remplazar -99 a NA
+tb[tb==-99] = NA
+
+# Limpiar NAs
+tb = na.omit(tb)
+
+# Crear indice con 800
+indice = sample(1:nrow(tb), 800, replace = FALSE)
+tb_limpio = tb[indice,]
+
+# Nuevo Doc
+write.csv(tb_limpio, "PED2022_Muestra.csv",row.names = FALSE)
+```
+

@@ -1,0 +1,60 @@
+---
+title: "Tarea 2-3"
+author: "Raúl Correa Ocañas"
+date: "`r Sys.Date()`"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Pregunta 1
+
+```{r}
+x = c(0,1,2,3,4)
+prob = c(0.1,0.25,0.35,0.2,0.1)
+sum(x*prob)
+```
+
+## Pregunta 2
+```{r}
+f = function(x) {(40*x)*2*x^-3} 
+integrate(f,1,Inf)
+```
+
+## Pregunta 3
+```{r}
+x = c(3860,4228,5251,4776,3568,3123,4228,4403,4512,3625)
+y = c(72.61,93.81,79.81,88.62,60.79,89.16,55.02,55.63,78.68,72.9)
+cor(x,y)
+```
+## Pregunta 4
+```{r}
+p1 = pnorm(-1.80)
+p2 = pnorm(-2.10)
+p = p1-p2
+p
+```
+## Pregunta 5
+```{r}
+qt(.1,21)
+```
+## Pregunta 6
+```{r}
+miu = 50
+sigma = 9
+muestra = 60
+t_max = 65
+p = 1-pnorm(t_max,miu,sigma)
+muestra*p
+```
+
+## Pregunta 7
+```{r}
+miu = 173
+sigma = 40
+muestra = 200
+x_muestra = 180
+```
+

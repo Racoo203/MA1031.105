@@ -1,0 +1,11 @@
+---
+title: "Actividad 5 - MA1031.105"
+author: "Raúl Correa Ocañas"
+date: "`r Sys.Date()`"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+

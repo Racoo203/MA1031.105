@@ -1,0 +1,154 @@
+---
+title: "2. Actividad La Normal"
+author: "Raúl Correa Ocañas"
+date: "`r Sys.Date()`"
+output:
+  word_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Un primer ejercicio
+1. Para una variable aleatoria que se distribuye como una Normal con media 100 y desviación estándar 15, calcula:
+  
+a. ¿Qué porcentaje de la población de x es inferior a 70?
+
+Bien se puede modelar la informacion como una distrubcion normal de forma X ~ N(100,15)
+
+```{r}
+miu1 = 100
+sig1 = 15
+x1 = 70
+p1 = pnorm(x1,miu1,sig1)*100
+cat("X ~ N(100,15) => P(X < 70) = ",p1,"%")
+```
+Por otro lado se puede modelar con una distribucion normal estandarizada de forma Z ~ N(0,1)
+
+```{r}
+z1 = (x1-miu1)/sig1
+p2 = pnorm(z1,0,1)*100
+cat("Z ~ N(0,1) => P(Z < (70-100)/15) = ",p2,"%")
+```
+b. Hallar los valores de x que corresponden al 5% repartido en los extremos (bilateral)
+    
+```{r}
+extremo1 = 0.05/2
+extremo2 = 1-extremo1
+v1 = qnorm(extremo1,100,15)
+v2 = qnorm(extremo2,100,15)
+cat(extremo1*100,"% -",v1,"|",extremo2*100,"% -",v2)
+```
+c. ¿A cuántas desviaciones estándar estará el 5% extremo inferior y cuál es su valor en X?
+
+```{r}
+extremo3 = 0.05
+v3 = qnorm(extremo3,100,15)
+z2 = (v3-miu1)/sig1
+cat("El 5% extremo inferior tiene un valor de",v3,"y se encuentra a",z2,"desviaciones estandar de la media.")
+```
+
+# ¡Ah!... la Z
+1. Calcula  las  probabilidades  para  una  variable  aleatoria  Z  con  Distribución  Normal  Estándar  tales que:
+
+a. P(0 ≤ Z ≤ 1.2)
+    
+```{r}
+upbound = 1.2
+lowbound = 0
+p1 = pnorm(upbound,0,1)
+p2 = pnorm(lowbound,0,1)
+cat("P(0 ≤ Z ≤ 1.2) =", p1-p2)
+```
+b. P(0.3 ≤ Z ≤ 1.56)
+
+```{r}
+upbound = 1.56
+lowbound = 0.3
+p1 = pnorm(upbound,0,1)
+p2 = pnorm(lowbound,0,1)
+cat("P(0.3 ≤ Z ≤ 1.56) =", p1-p2)
+```
+
+2. Si  Z  es  una  variable  aleatoria  normal  estándar,  encuentre  el  valor  de  z  tal  que  cumpla con  la condición de:
+
+    a. P( Z  > z ) = 0.8643
+
+```{r}
+z1 = qnorm(1-0.8643,0,1)
+# la probabilidad es dada por el area de -inf a z1. Por lo tanto para buscar probabilidades cuando Z es mayor que z se busca la probabilidad complementaria.
+cat("P( Z  > z ) = 0.8643 ==> z =", z1)
+```
+
+    b. P(-z <  Z  < z ) = 0.90
+    
+```{r}
+z2 = qnorm(0.90 + (1-0.9)/2,0,1)
+cat("P(-z <  Z  < z ) = 0.90 ==> z =", z2)
+```
+
+3. Considérese  una  variable  aleatoria  X  con  distribución  de  población  normal  con  media  μ  y 
+desviación estándar σ de la cual se obtiene un dato al azar. Para un valor x indaga:
+
+    a. ¿Cuál es la probabilidad de que el valor x esté 2.81 desviaciones estándar alrededor de la media?
+
+```{r}
+upbound = 2.81
+lowbound = -2.81
+p1 = pnorm(upbound,0,1)-pnorm(lowbound,0,1)
+cat("La probabilidad de encontrarse a 2.81 desviaciones estandar al rededor de la media es",p1)
+```
+
+    b. ¿Cuál es la probabilidad de que el valor x esté 1.44 desviaciones estándar alrededor de la media?
+    
+```{r}
+upbound = 1.44
+lowbound = -1.44
+p1 = pnorm(upbound,0,1)-pnorm(lowbound,0,1)
+cat("La probabilidad de encontrarse a 1.44 desviaciones estandar al rededor de la media es",p1)
+```
+    
+    c. ¿Cuántas desviaciones estándar hay que sumarle a la media para que la probabilidad de que el valor x esté ese número de desviaciones estándar alrededor de la media sea de 0.997?
+
+```{r}
+lowbound = (1-0.997)/2
+z1 = qnorm(lowbound,0,1)*-1
+cat("Se ocupa sumar",z1,"desviaciones estandar a la media.")
+```
+    
+    d. ¿Cuántas  desviaciones  estándar  hay  que  sumarle  a  la  media  para  que  la  probabilidad alrededor de la media sea de 0.75?
+
+```{r}
+
+lowbound = (1-0.75)/2
+z1 = qnorm(lowbound,0,1)*-1
+cat("Se ocupa sumar",z1,"desviaciones estandar a la media.")
+
+```
+    
+
+# La medida exacta
+Hay dos máquinas disponibles para cortar corchos para usarse en botellas de vino. La primera produce corchos con diámetros que están normalmente distribuidos con media de 3 cm y desviación estándar de 0.1 cm. La segunda máquina produce corchos con diámetros que tienen una distribución normal con media  de  3.04  y  desviación  estándar  de  0.02  cm.  Los  corchos  útiles  en  la  industria  vinícola  tienen diámetros  de  entre  2.9  y  3.1  cm.  ¿Cuál  es  la  máquina  que  es  más  probable  que  produzca  un corcho aceptable? Calcula las probabilidades para comprobarlo.
+
+M1 ~ N(3,0.1) y M2 ~ N(3.04,0.02)
+
+Basicamente se nos esta preguntando encontrar P(2.9 < M1 < 3.1) y P(2.9 < M2 < 3.1), y determinar cual probabilidad es mayor. 
+
+```{r}
+upr = 3.1
+lwr = 2.9
+
+miu1 = 3
+sig1 = 0.1
+m1 = pnorm(upr,miu1,sig1)-pnorm(lwr,miu1,sig1)
+
+miu2 = 3.04
+sig2 = 0.02
+m2 = pnorm(upr,miu2,sig2)-pnorm(lwr,miu2,sig2)
+
+cat("La maquina 1 tiene una probabilidad de", m1,"para cortar corchos con un diametro en el rango de 2.9 a 3.1 cm.","\nLa maquina 2 tiene una probabilidad de",m2,"para cortar corchos con un diametro en el rango de 2.9 a 3.1 cm")
+
+```
+El 68.3% de los casos para la maquina uno se tendra un corcho en el rango aceptado, mientras que la maquina dos tiene una probabilidad de 99.9% de tener un corcho en ese mismo rango. Por lo tanto, la  máquina  que  es  más  probable  de  producir  un corcho aceptable es la maquina dos.

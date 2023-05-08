@@ -1,0 +1,111 @@
+---
+title: "Actividad 1"
+author: "Raúl Correa Ocañas"
+date: "`r Sys.Date()`"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Problema 1
+
+Dada la siguiente distribución de probabilidad:
+```{r}
+x1 = 0:4
+p1 = c(0.08, 0.15, 0.45, 0.27, 0.05)
+
+T1 = data.frame(x1,p1)
+print(T1)
+```
+
+
+a) ¿Cuál sería el valor esperado de la siguiente variable aleatoria X?
+
+```{r}
+Ex1 = sum(x1*p1)
+cat("La esperanza de x es",Ex1)
+```
+
+b) Si Y depende de X de la siguiente manera: Y = 20X^2, 
+¿Cuál es el valor esperado de Y?
+
+```{r}
+y1 = 20*x1**2
+Ey1 = sum(y1*p1)
+cat("La esperanza de y es", Ey1)
+```
+## Problema 2
+
+Unos actuarios de la secretaría de seguridad pública y vialidad consiguieron resolver el asunto de la 
+probabilidad  asociada  al  número  de  multas  anuales  para  determinar  el  monto  esperado  de  multas anuales que recibe el gobierno. El resultado fue:
+```{r}
+x2 = 0:6
+p2 = c(0.2,0.25,0.2,0.15,0.1,0.05,0.05)
+T2 = data.frame(x2,p2)
+print(T2)
+```
+
+a) ¿Cuál es el valor esperado de X? 
+¿cuántas multas se espera tenga el ciudadano promedio que maneja?
+
+
+```{r}
+Ex2 = sum(x2*p2)
+cat("Se espera que el numero de multas que un ciudadano promedio tenga es",Ex2)
+```
+b) La  Secretaría  de  Tránsito  decide  cobrar  un  recargo  a  las  multas  de  acuerdo  con  la  fórmula $100X^2. Si se toma una persona al azar, ¿cuál será el valor esperado del pago por recargos que 
+haría? Si hay un millón de automovilistas, ¿cuánto se espera que ingrese al año por el concepto 
+de recargo?
+
+```{r}
+options(scipen=999)
+y2 = 100*x2**2
+Ey2 = sum(y2*p2)
+total = Ey2 * 1000000
+cat("Se espera que el ciudadano promedio por sus multas pague $",Ey2,"\nSe espera que  al año por el concepto de recargo ingrese $",total)
+```
+## Problema 3
+
+En un juego con un dado, el premio en dólares está dado por la función 𝑔(𝑋) = 2𝑋^2 +𝑋, donde 𝑋 es el valor de puntos tirados.
+
+a) ¿Cuál es la ganancia esperada si el dado está balanceado?
+
+```{r}
+x3 = 1:6
+g = 2*x3**2+x3
+
+p = 1/6
+
+Ex3 = sum(g*p)
+cat("La ganancia esperada es $",Ex3)
+```
+
+b) ¿Cuál es la ganancia esperada en un lanzamiento si el dado está cargado de modo que los números 
+impares son dos veces más probables que los números pares?
+
+```{r}
+p_cargada = c(2/9,1/9,2/9,1/9,2/9,1/9)
+Ex_cargada = sum(g*p_cargada)
+cat("La ganancia esperada con probabilidades cargadas es $",Ex_cargada)
+```
+
+c) ¿Cuál es la ganancia esperada en 30 lanzamientos?
+
+```{r}
+total3 = Ex_cargada * 30
+cat("La ganancia esperada en 30 lanzamientos es de $",total3)
+```
+
+d) Si Miguel gana cuando cae un número impar y Luis cuando cae un número par. ¿Podemos decir que 
+alguno tiene mayor ventaja en el juego? Argumenta tu respuesta. 
+
+```{r}
+x4 = 1:3
+E_miguel = sum((2*(2*x4-1)**2+x4)*2/9)
+E_luis = sum((2*(2*x4)**2+x4)*1/9)
+resta = E_miguel-E_luis
+cat("La esperanza para Miguel es de",E_miguel,", mientras la esperanza de Luis es de",E_luis,". Por lo tanto, se espera que Miguel gane",resta," más que Luis.")
+```
+Por lo tanto, Miguel tiene mayor ventaja que Luis.
+

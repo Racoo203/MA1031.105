@@ -1,0 +1,443 @@
+---
+title: "Actividad 5. Regresión Lineal"
+author: "Raúl Correa Ocañas"
+date: "2023-03-13"
+output:
+  word_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(printr)
+```
+
+# Leyendo los datos
+
+```{r}
+M = read.csv("PED2022_Muestra.csv")
+# str(M) # da la estructura de los datos
+```
+
+# Descripción numérica de los datos
+
+```{r}
+cat("Resumen de datos de la variable O3\n")
+summary(M$O3)
+cat("Desv estándar:", sd(M$O3), "\n")
+cat("Varianza", var(M$O3))
+```
+
+## Expandiendo summary
+
+Se va a añadir la desviación estándar:
+
+```{r, message = FALSE}
+summary(M$O3)
+des = sd(M$O3)
+```
+
+## Con apply
+
+```{r}
+r = apply(M,2,summary) # CO, NO, NO2, NOX, O3, PM10, PM25
+r1 = as.numeric(r[1,]) #Min
+r2 = as.numeric(r[2,]) #Q1
+r3 = as.numeric(r[3,]) #Mediana
+r4 = as.numeric(r[4,]) #Media
+r5 = as.numeric(r[5,]) #Q3
+r6 = as.numeric(r[6,]) #Max
+r7 = as.numeric(apply(M,2,sd)) #Desv. Estand.
+
+S = rbind(r1,r2,r3,r4,r5,r6,r7)
+colnames(S)=c("CO", "NO", "NO2", "NOX", "O3", "PM10", "PM25")
+row.names(S)=c("Min", "Q1", "mediana", "Media", "Q3", "Max", "Desv")
+S
+```
+
+## Gráficando
+
+```{r}
+boxplot(M, horizontal = TRUE,col=rainbow(6))
+```
+
+## Cómo juntar varios gráficos en uno sólo
+
+```{r}
+par(mfrow = c(2, 1))  # c(núm filas, núm. de colum) 
+hist(M$O3)
+boxplot(M$O3, horizontal = TRUE)
+```
+# Regresión lineal simple
+
+## El modelo
+
+Variable respuesta del equipo es: PM10
+Variable independiente: O3
+
+```{r}
+x = M$O3
+y = M$PM10
+plot(x,y, col = "red", pch = 20)
+```
+```{r}
+regresion = lm(y ~ x )
+regresion
+```
+Por tanto, la fórmula quedaría:  y = 24.4468  + 0.2494 x
+                                 y = bo + b1x
+
+
+## Verificación del modelo:
+
+### 1. Hipótesis
+Ho: Beta1 = 0
+H1: Beta1 != 0
+
+### 2. Regla de decisión
+alfa = 0.05
+
+```{r}
+n=800
+k=1
+alfa=0.05
+t0=qt(0.05/2,n-k-1)
+cat("t0 =",t0)
+```
+
+*Regla de decisión*:
+
+Se rechaza H0 si:
+
+* Si |t*| > |t0|=1.9629
+* Si valor p < alfa = 0.05
+
+### 3. Análisis del Resultado
+
+```{r}
+summary(regresion)
+```
+
+Obtenemos: |t*|=14.78 y valor-p = 2.2 x 10^-16
+
+También observamos que:
+* r^2 = 0.1932 (es decir, el 19.32% de la varianza total de los datos es explicada por el modelo)
+* El modelo tiene un valor p de 2.2 e-16 (F-statistic)
+
+### 4. Conclusión
+
+#### Beta
+
+Se rechaza H0 porque:
+* |t*|=14.78 > |t0|=1.9629
+* valor-p = 2.2 x 10^-16 es menor que alfa = 0.05
+
+Como se rechaza H0, esto significa que Beta 1 es estadísticamente significativa, es decir, hay evidencia suficiente para decir que Beta 1 es diferente de cero.
+
+#### Coeficiente de determinación
+
+* r^2 = 0.1932 El 19.32% de la varianza total de los datos es explicada por el modelo.
+
+#### Modelo
+
+El modelo tiene un valor p de 2.2 e-16 que es menor que alfa =0.05, por lo tanto, hay evidencia de que el modelo es significativo.
+
+### Gráfica
+
+Añadiendo la recta y su ecuación al gráfico:
+
+```{r}
+x = M$O3
+y = M$PM10
+plot(x,y, col = "red", pch = 20, main = "Regresión O3-PM10")
+abline(regresion, lwd = 2, col = "blue")
+text(120, 0.5, "y = 24.44677  + 0.24936 x",cex=.8,col="blue")
+```
+
+## Análisis residual
+
+Gráfico de residuos vs. y estimada
+```{r}
+plot(regresion$fitted.values, regresion$residuals, col = "blue")
+abline(h = 0, col = "red", lty = 3, lwd = 2)  # h=línea horizontal en 0, lty = estilo de línea, lwd = grosor
+```
+
+## Prueba de hipótesis de residuos 0
+
+### 1. Hipótesis
+Ho: Media_residuos = 0 
+H1: Media de los resudios != 0
+alfa = 0.05
+
+$ \mu_{\ residuos} = 0$
+$ \mu_{\ residuos} \neq 0$
+$\alpha = 0.05$
+
+### 2. Regla de decisión
+
+Al ser un tamaño de muestra grande, n=800, podemos suponer que:
+
+X barra ~ N(0,desv(errores))
+alfa = 0.05
+
+**OJO:** Desv tendría que ser la desviación estándar de la población, pero no la tenemos. Como tenemos una muestra muy grande (800) podemos suplirla por la desviación estándar de la muestra. Se calcula a partir de los residuos.
+
+El estadístico de prueba es Z
+
+```{r}
+z0=qnorm(0.05/2)
+cat("z0 =",z0)
+```
+
+*Regla de decisión*:
+
+Se rechaza H0 si:
+
+* Si |z*| > |z0| = 1.96
+* Si valor p < alfa = 0.05
+
+### 3. Análisis del resultado
+
+```{r}
+xbarra = mean(regresion$residuals) #Cálculo de la media de los residuos
+desv = sd(regresion$residuals) #Cálculo de la desviación estándar de los residuos
+
+zestrella = xbarra/(desv/sqrt(n))
+cat("z* =",zestrella,"\n")
+
+pnorm(zestrella)
+
+valorp = 2*pnorm(zestrella)
+cat("Valor p =",valorp,"\n")
+```
+
+### 4. Conclusión
+
+No se rechaza H0 porque:
+* |z*|=-1.822731e-16 < |z0|= 1.96
+* valor-p = 1 es mayor que alfa = 0.05
+
+Se rechaza H0 
+No hay evidencia suficiente para decir que la media de los residuos sea diferente de 0. 
+
+## Más análisis de los residuos
+
+Los gráficos que se dibujan con la instrucción: plot(regresion)
+
+
+```{r}
+plot(regresion,col="red",pch=20)
+```
+
+
+Estos gráficos proporcionan el análisis de:
+
+**Gráfica de Residuals vs. Fitted (residuos vs. valores ajustados)** auxilia en dos sentidos:
+
+* Homocedastidad (igualdad de varianzas): los residuos se deben observar con la misma dispersión en todos los valores ajustados.Si hay tendencia, es que no hay homocedasticidad. El modelo no es tan confiable si no hay homocedasticidad.
+
+* Independencia: Observa la línea de la media de los residuos se mantiene horizontal a lo largo de los valores ajustados, si es así, hay independencia, si no es así, no la hay. Si no hay independencia, el modelo no es tan confiable.
+
+**Grafica Normal QQ**. Es denominada QQ plot.
+Sirve para indicar si hay normalidad en los residuos: los residuos se comportarán como una distribución muestral, si la QQ plot se comporta como una línea recta. Si la QQ plot se aleja de la línea recta, no hay normalidad en los residuos. Si los residuos no se comportan como una normal, entonces el modelo no es muy confiable.
+
+**Gráfico Scale-Location** proporciona la misma información que el gráfico Residual vs Fitted, pero resaltando más las diferencias en el alejamiento de independencia.
+
+**Residuals vs Leverage** Ayuda a detectar los datos que tienen mayor influencia en el modelo obtenido (es decir tienen una influencia grande en el cálculo de Beta) o bien aquellos datos que resultan atípicos de acuerdo con el modelo obtenido. El gráfico muestra límites. Aquellos datos que rebasen esos límites en conveniente quitarlos y volver a calcular el modelo. El alejamiento de normalidad, la falta de homocedasticidad o de independencia a veces se pueden corregir quitando esos datos del modelo de regresión.
+
+## Conclusión sobre el modelo
+
+Se debe resumir qué tan conveniente es el modelo y por qué.
+
+
+
+
+# Un modelo más amplio: Regresión lineal múltiple
+
+Una forma de mejorar el modelo, puede ser añadiendo una variable independiente más:
+
+Y = bo + b1 X1 + b2 X2
+
+Variable respuesta, Y, es: CO
+Variables independientes, X1 y X2, son: NOX, NO
+
+```{r}
+x1 = M$O3
+x2 = M$NOX
+y = M$PM10
+regresion2 = lm(y ~ x1+x2 )
+regresion2
+```
+
+**Modelo** (ecuación): Y = 0.0203450 + 0.0121482X1 - 0.0008613X2 
+
+Se debe hacer el mismo análisis para este modelo que para el modelo de regresión simple:
+
+* Verificación del modelo: Con el comando: summary(regresion2) proporciona el análisis de cada beta que añadas al modelo.
+
+```{r}
+summary(regresion2)
+```
+
+# Regresión curvilínea
+
+Otra forma de mejorar el modelo, es haciendo cambios de variable y quitando la linealidad de alguna forma. Por ejemplo, para proponer un modelo cuadrático, se pueden establecer las siguientes variables:
+
+Y = b0 + b1 X1 + b2 X1^2
+
+puede quedar como:
+
+Y = b0 + b1 Z1 + b2 Z1,  si  Z1 = X1 y Z2 = X1^2  
+
+```{r}
+z1 = M$O3
+z2 = M$O3^2
+y = M$PM10
+regresion3 = lm(y ~ z1 + z2)
+regresion3
+```
+```{r}
+x = M$O3
+y = M$PM10
+plot(x,y, col = "red", pch = 20, main = "Regresión O3-PM10")
+abline(regresion3, lwd = 2, col = "blue")
+text(120, 0.5, "y = 26.381480  + 0.112912 x + 0.001364 x^2",cex=.8,col="blue")
+```
+y = 26.381480  + 0.112912 x + 0.001364 x^2
+
+PM10 = 26.381480  + 0.112912 O3 + 0.001364 (O3)^2
+
+Se debe hacer el mismo análisis para este modelo que para el modelo de regresión simple:
+
+* Verificación del modelo: Con el comando: summary(regresion2) proporciona el análisis de las betas del modelo.
+
+```{r}
+summary(regresion3)
+
+```
+
+## Verificación del modelo:
+
+### 1. Hipótesis
+Ho: Beta1 = 0
+H1: Beta1 != 0
+
+### 2. Regla de decisión
+alfa = 0.05
+
+```{r}
+n=800
+k=1
+alfa=0.05
+t0=qt(0.05/2,n-k-1)
+cat("t0 =",t0)
+```
+
+*Regla de decisión*:
+
+Se rechaza H0 si:
+
+* Si |t*| > |t0|=1.9629
+* Si valor p < alfa = 0.05
+
+### 3. Análisis del Resultado
+
+```{r}
+summary(regresion3)
+```
+
+Obtenemos: |t*|=14.73 y valor-p = 2.2 x 10^-16
+
+También observamos que:
+* r^2 = 0.1988 (es decir, el 19.88% de la varianza total de los datos es explicada por el modelo)
+* El modelo tiene un valor p de 2.2 e-16 (F-statistic)
+
+### 4. Conclusión
+
+#### Beta
+
+Se rechaza H0 porque:
+* |t*|=14.73 > |t0|=1.9629
+* valor-p = 2.2 x 10^-16 es menor que alfa = 0.05
+
+Como se rechaza H0, esto significa que Beta 1 es estadísticamente significativa, es decir, hay evidencia suficiente para decir que Beta 1 es diferente de cero.
+
+#### Coeficiente de determinación
+
+* r^2 = 0.1988 El 19.88% de la varianza total de los datos es explicada por el modelo.
+
+#### Modelo
+
+El modelo tiene un valor p de 2.2 e-16 que es menor que alfa =0.05, por lo tanto, hay evidencia de que el modelo es significativo.
+
+
+
+Gráfico de residuos vs. y estimada
+```{r}
+plot(regresion3$fitted.values, regresion3$residuals, col = "blue")
+abline(h = 0, col = "red", lty = 3, lwd = 2)  # h=línea horizontal en 0, lty = estilo de línea, lwd = grosor
+```
+
+## Prueba de hipótesis de residuos 0
+
+### 1. Hipótesis
+Ho: Media_residuos = 0 
+H1: Media de los resudios != 0
+alfa = 0.05
+
+$ \mu_{\ residuos} = 0$
+$ \mu_{\ residuos} \neq 0$
+$\alpha = 0.05$
+
+### 2. Regla de decisión
+
+Al ser un tamaño de muestra grande, n=800, podemos suponer que:
+
+X barra ~ N(0,desv(errores))
+alfa = 0.05
+
+**OJO:** Desv tendría que ser la desviación estándar de la población, pero no la tenemos. Como tenemos una muestra muy grande (800) podemos suplirla por la desviación estándar de la muestra. Se calcula a partir de los residuos.
+
+El estadístico de prueba es Z
+
+```{r}
+z0=qnorm(0.05/2)
+cat("z0 =",z0)
+```
+
+*Regla de decisión*:
+
+Se rechaza H0 si:
+
+* Si |z*| > |z0| = 1.96
+* Si valor p < alfa = 0.05
+
+### 3. Análisis del resultado
+
+```{r}
+n=800
+xbarra = mean(regresion3$residuals) #Cálculo de la media de los residuos
+desv = sd(regresion3$residuals) #Cálculo de la desviación estándar de los residuos
+
+zestrella = xbarra/(desv/sqrt(n))
+cat("z* =",zestrella,"\n")
+
+pnorm(zestrella)
+
+valorp = 2*pnorm(zestrella)
+cat("Valor p =",valorp,"\n")
+```
+
+### 4. Conclusión
+
+No se rechaza H0 porque:
+* |z*|=-1.822731e-16 < |z0|= 1.96
+* valor-p = 1 es mayor que alfa = 0.05
+
+Se rechaza H0 
+No hay evidencia suficiente para decir que la media de los residuos sea diferente de 0. 
+
+## Más análisis de los residuos
+
+Los gráficos que se dibujan con la instrucción: plot(regresion)

@@ -1,0 +1,154 @@
+---
+title: "Actividad 4 - MA1031.105"
+author: "Raúl Correa Ocañas"
+date: "`r Sys.Date()`"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Onzas verdaderas.   (Población Normal, 𝝈 conocida)
+
+Por experiencia se sabe que la desviación estándar del peso de paquetes de 8 onzas de galletas de cierta pastelería es de 0.16 onzas. Para comprobar si su producción está bajo control en un día dado, esto es, comprobar si el peso promedio verdadero de los paquetes es 8 onzas, los empleados seleccionan una muestra aleatoria de 25 paquetes y encuentran que su peso promedio fue 8.091 onzas. Suponga que los datos son una muestra aleatoria de una población normal.
+
+Puesto que la pastelería pierde dinero cuando 𝜇> 8 y el cliente pierde cuando 𝜇< 8.  ¿Se recomendaría hacer ajustes apropiados en el proceso de producción? Ensaye su hipótesis a un nivel de significancia de 0.01 
+
+## Paso 1: Hipótesis
+
+Se tiene una variable continua aleatoria denominada como $x$ que se distribuye normalmente como:
+
+$x\sim N(\mu,\sigma), \mu=8,\sigma=0.16$
+
+Teniendo una muestra de 25, se tiene un error estandar de:
+
+$S_x = \frac{\sigma}{\sqrt{25}}$
+
+$S_x = \frac{0.16}{5} = 0.032$
+
+
+Por lo tanto, se define nuestra hipótesis nula e hipótesis alternativa como:
+
+$H_0:\mu=8$
+
+$H_1:\mu\neq8$
+
+## Paso 2: Regla de Decisión
+
+$x\sim N(\mu,S_x), \mu=8,S_x=0.032$
+
+```{r}
+miu = 8
+alfa = 0.01
+sig = .16/sqrt(25)
+
+z_cero = qnorm(alfa/2)
+lwr = qnorm(alfa/2,miu,sig)
+upr = qnorm(1-alfa/2,miu,sig)
+
+datos = seq(miu-4*sig,miu+4*sig,0.001)
+plot(datos,dnorm(datos,miu,sig), xlab = "Onzas", main = "Distribucion Normal modelando peso de paquetes")
+abline(v=lwr)
+abline(v=upr)
+
+```
+```{r}
+cat("Para rechazar la hipótesis nula, x debe encontrase a", z_cero, "desviaciones estandar o más de la media, indicando que se debe hacer cambios en la producción. \n")
+
+cat("En caso de encontrarse en el intervalo de",lwr,"a",upr,", se aprueba la hipótesis nula, indicando que no es necesario hacer cambios en la producción. \n")
+```
+
+## Paso 3: Análisis de resultado
+```{r}
+miu_estrella = 8.091
+z_estrella = (miu_estrella-miu)/sig
+
+#Valor P
+
+pv1 = 1-pnorm(miu_estrella,miu,sig)
+pv1
+pv2 = 1-pnorm(z_estrella)
+pv2
+
+cat("Z estrella esta a",z_estrella,"desviaciones estandar de la media poblacional.\n")
+cat("Valor p de:",pv1)
+```
+
+## Paso 4: Decisión y Conclusión estadística
+
+```{r}
+cat("pv1 >= alfa:",pv1 >= alfa,"\n")
+cat("Z estrella esta dentro de [",lwr,",",upr,"]:",miu_estrella > lwr && miu_estrella < upr,"\n")
+cat("Por lo tanto, se rechaza la hipotesis nula: se recomienda hacer cambios en su produccion.")
+
+```
+
+# Vida útil ( 𝝈 desconocida, n>30, estimación con s)
+
+Suponga  que  100  neumáticos  que  cierto  fabricante  produce  duraron  en  promedio  21,819 millas con una desviación estándar de 1,295 millas. Si el fabricante afirma que la duración promedio de sus neumáticos es de 22,000 millas. Ensaye la hipótesis de que los neumáticos no son tan buenos como se supone a un nivel de significación de 0.01
+
+## Paso 1: Hipótesis
+
+Se tiene una variable continua aleatoria denominada como $x$ que se distribuye normalmente como:
+
+$x\sim N(\mu,\sigma_\overline{x}), \mu=22,000,\sigma_\overline{x}=1,295$
+
+Se sabe que para la muestra de 100, su desviación estandar considerando el tamaño de muestra es de:
+
+$S_x = \sigma_\overline{x}$
+
+$S_x = 1,295$
+
+Por lo tanto, se define nuestra hipótesis nula e hipótesis alternativa como:
+
+$H_0:\mu=22,000$
+
+$H_1:\mu<22,000$
+
+## Paso 2: Regla de Decisión
+
+$x\sim N(\mu,S_x), \mu=22,000,S_x=1,295$
+
+```{r}
+miu = 22000
+sx = 1295
+alpha = 0.01
+
+z_cero = qnorm(alpha)
+lwr = qnorm(alpha,miu,sx)
+
+datos = seq(miu-4*sx,miu+4*sx,50)
+plot(datos, dnorm(datos,miu,sx),
+     xlab = "Duracion de llanta",
+     main = "Distribucion Normal modelando duracion de llanta")
+abline(v=lwr)
+
+```
+```{r}
+cat("Para rechazar la hipótesis nula, x debe encontrase a", z_cero, "desviaciones estandar o más de la media, indicando que se debe hacer cambios en la producción. \n")
+
+cat("En caso de ser mayor de",lwr,", se aprueba la hipótesis nula, indicando que no es necesario hacer cambios en la producción. \n")
+```
+
+## Paso 3: Análisis de Resultado
+
+```{r}
+miu_estrella = 21819
+z_estrella = (miu_estrella-miu)/sx
+
+pv1 = pnorm(z_estrella)
+pv2 = pnorm(miu_estrella,miu,sx)
+
+cat("Z estrella esta a",abs(z_estrella),"desviaciones estandar de la media poblacional.\n")
+cat("Valor p de:",pv1)
+
+```
+
+## Paso 4: Decisión y Conclusión Estadística
+```{r}
+cat("pv1 >= alpha:",pv1 >= alpha,"\n")
+cat("Z estrella esta dentro de [",lwr,", +inf]:",miu_estrella > lwr,"\n")
+cat("Por lo tanto, no se puede rechazar la hipotesis nula: La producción de las llantas es aceptable y pueden considerarse como buenos.")
+```
+

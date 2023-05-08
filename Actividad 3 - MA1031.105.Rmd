@@ -1,0 +1,175 @@
+---
+title: "Actividad 3 - MA1031.105"
+author: "Raúl Correa Ocañas"
+date: "`r Sys.Date()`"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Remaches
+
+La  resistencia  a  la  ruptura  de  un  remache  tiene  un  valor  medio  de  10,000  lb/pulg2  y  una desviación estándar de 500 lb/pulg2. Si se sabe que la población se distribuye normalmente:
+
+X ~ N(10000,500)
+
+a) ¿Cuál es la probabilidad de que, al tomar un remache al azar de esa población, éste tenga una resistencia a la ruptura que esté a 100 unidades alrededor de la media? ¿A cuántas desviaciones estándar de la media se encuentra este valor?
+
+P(9000 < X < 11000)
+
+```{r}
+upr = 10100
+lwr = 9900
+miu1 = 10000
+sig1 = 500
+p1 = pnorm(upr,miu1,sig1)-pnorm(lwr,miu1,sig1)
+
+z1 = (upr - miu1)/sig1
+
+cat("La probabilidad de P(9900 < X < 101000) es:",p1,"\nEl valor se encuentra a",z1,"desviaciones estándar.")
+```
+*graficamente*
+
+```{r}
+x1 = seq(miu1-5*sig1, miu1+5*sig1, 0.1)
+y1 = dnorm(x1,miu1,sig1)
+plot(x1,y1,type="l",col="blue",main="Distribución de la resistencia de un remache")
+abline(v=miu1+100,col="red")
+abline(v=miu1-100,col="red")
+```
+
+
+b) ¿Cuál  es  la  probabilidad  de  que  la  resistencia  media  a  la  ruptura  de  la  muestra aleatoria de 120 remaches esté a lo más a 100 unidades alrededor de su media? ¿A cuántas desviaciones estándar de la media se encuentra este valor?
+
+```{r}
+sig2 = sig1/sqrt(120)
+p2 = pnorm(upr,miu1,sig2) - pnorm(lwr,miu1,sig2)
+z2 = (upr - miu1)/sig2
+
+cat("La probabilidad de P(9900 < X < 101000) con una muestra de 120 es de:",p2,"\nEl valor se encuentra a",z2,"desviaciones estándar.")
+
+```
+*graficamente*
+
+```{r}
+x2 = seq(miu1-5*sig2, miu1+5*sig2, 0.1)
+y2 = dnorm(x2,miu1,sig2)
+plot(x2,y2,type="l",col="blue",main="Distribución de la resistencia de un remache")
+abline(v=miu1+100,col="red")
+abline(v=miu1-100,col="red")
+```
+
+c) Si el tamaño muestral hubiera sido 15, en lugar de 120, ¿cuál es la probabilidad de que  la  resistencia  media  a  la  ruptura  esté  a  lo  más  a  100  unidades  alrededor  de  la media? ¿A cuántas desviaciones estándar de la media se encuentra este valor?
+
+```{r}
+sig3 = sig1/sqrt(15)
+p3 = pnorm(upr,miu1,sig3) - pnorm(lwr,miu1,sig3)
+z3 = (upr - miu1)/sig3
+
+cat("La probabilidad de P(9900 < X < 101000) con una muestra de 15 es de:",p3,"\nEl valor se encuentra a",z3,"desviaciones estándar.")
+
+```
+*graficamente*
+
+```{r}
+x3 = seq(miu1-5*sig3, miu1+5*sig3, 0.1)
+y3 = dnorm(x3,miu1,sig3)
+plot(x3,y3,type="l",col="blue",main="Distribución de la resistencia de un remache")
+abline(v=miu1+100,col="red")
+abline(v=miu1-100,col="red")
+```
+
+d) Un  ingeniero  quiso  verificar  la  media  proporcionada  y  tomó  una  muestra  de  120 remaches para ello. La media de los 120 remaches fue de 9800 lb/pulg2 y rechazó el pedido, ¿hizo lo correcto? ¿por qué? (justifica con argumentos probabilísticos). Si la media hubiera sido 9925, ¿recomendarías rechazar?
+
+```{r}
+miu4 = 9800
+miu5 = 9925
+z4 = (miu4 - miu1)/sig2
+z5 = (miu5 - miu1)/sig2
+cat("La media de 9800 se encuentra a",z4,"desviaciones estandar de la media poblacional, por lo que tomo una buena decisión.\nEn cambio, con una media de 9925 se encuentra a",z5, "desviaciones estandar, lo cual sigue estando lejos de la media poblacional por lo cual se recomendaría rechazar.")
+```
+```{r}
+x4 = seq(miu1-5*sig2, miu1+5*sig2, 0.1)
+y4 = dnorm(x4,miu1,sig2)
+plot(x4,y4,type="l",col="blue",main="Distribución de la resistencia de un remache")
+abline(v=miu4,col="red")
+abline(v=miu5,col="red")
+```
+
+## Emisiones de N2O
+Se  sometió  a  prueba  un  grupo  de  camiones  ligeros  con  motores  que  utilizan  diesel  como combustible para saber si la humedad relativa (porcentaje), la temperatura del aire (en grados Fahrenheit F̊)  y  la  presión  barométrica  (en  pulgadas  de  mercurio  inHg)  influyen  en  la cantidad de óxido nitroso que emiten (en ppm, partes por millón). Las emisiones se midieron en distintos momentos y en diversas condiciones experimentales. Los datos se presentan en la tabla de abajo.
+
+```{r}
+n2o = read.csv(file = "Actividad3-N20.csv", header=TRUE)
+print(n2o)
+```
+
+
+a) Elabora  un  diagrama  de  dispersión  para  cada  par  de  variables.  ¿Qué  relaciones destacadas entre las variables sugiere el gráfico?
+
+```{r}
+plot(x = n2o$Humedad,y = n2o$Oxido.nitroso,
+     xlab = "Humedad",
+     ylab = "Oxido nitroso")
+```
+
+Correlación negativa: Más humedad, menor oxido nitroso
+
+
+```{r}
+plot(x = n2o$Temperatura,y = n2o$Oxido.nitroso,
+     xlab = "Temperatura",
+     ylab = "Oxido nitroso")
+```
+
+No hay correlación entre las variables.
+
+
+```{r}
+plot(x = n2o$Presion,y = n2o$Oxido.nitroso,
+     xlab = "Presion",
+     ylab = "Oxido nitroso")
+```
+
+Correlacion positiva: Mas presion, mas oxido nitroso.
+
+
+b) Construya  la  matriz  de  correlación  para  las  variables  involucradas  en  el  modelo. 
+Interpreta los resultados en el contexto del problema.
+
+```{r}
+cor(x = n2o)
+```
+
+La matriz de correlación indica que tan correlacionadas estan las variables entre si. Mientras mas cerca a cero se sabe que menos relacion tiene. Sin embargo, una relacion cerca a 1 o -1 lo hace casi una relación fuerte. El signo indica si es directa o inversa
+
+
+## Calificaciones vs. faltas
+Un  profesor  de  Estadística  desea  analizar  si  existe  una  relación  lineal  entre  la  cantidad  de faltas de los estudiantes y su resultado final. Para esto, ha recopilado la información de 15 estudiantes como se muestra en la tabla.
+
+```{r}
+basDat = read.csv(file = "Actividad3-Calif.csv", header = TRUE)
+print(basDat)
+```
+
+
+a) Calcula el coeficiente de correlación de Pearson y determina el tipo de relación lineal entre las variables.
+```{r}
+cor(basDat$Cantidad.de.faltas,basDat$Calificacion.final)
+```
+
+La relacion es aproximadamente inversa.
+
+
+b) Elabora el diagrama de dispersión para visualizar tu resultado.
+```{r}
+plot(basDat$Cantidad.de.faltas,basDat$Calificacion.final,
+     xlab = "Cantidad de Faltas",
+     ylab = "Calificacion Final")
+```
+
+c) Interpreta en el contexto del problema.
+
+
+Según la gráfica y el coeficiente de relación de Pearson, se indica que mientras más faltas obtienen los alumnos, menor calificación obtienen.

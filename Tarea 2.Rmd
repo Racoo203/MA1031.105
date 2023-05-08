@@ -1,0 +1,290 @@
+---
+title: "Tarea 2. Preparación para el Examen"
+author: "Raúl Correa Ocañas"
+date: "`r Sys.Date()`"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Pregunta 1
+
+```{r}
+x = c(5, 7, 9, 11, 16)
+px = c(0.1, 0.4, 0.1, 0.2, 0.2)
+ex = sum(px*x)
+ex
+
+```
+
+## Pregunta 2
+
+```{r}
+f = function(x) {(31*x)*(2*x^-3)}
+ex = integrate(f,1,+Inf)
+ex
+
+```
+
+## Pregunta 3
+
+```{r}
+x = c(2788, 3448, 4621, 5451, 3103, 3231, 3613, 5490, 4629, 3651)
+y = c(53.89, 68.59, 81.62, 62.59, 92.35, 83.64, 57.98, 61.95, 65.25, 76.60)
+cor(x,y)
+```
+
+## Pregunta 4
+
+```{r}
+p = pnorm(3.1)-pnorm(1.2)
+p
+```
+
+## Pregunta 5
+
+```{r}
+#Intento 1
+qt(0.01,21)
+
+#Intento 2
+qt(0.99,21)
+```
+
+## Pregunta 6
+
+```{r}
+#Intento 1
+miu = 11
+sigma = 1.5
+p1 = pnorm(11,miu,sigma)
+p2 = pnorm(14,miu,sigma) - pnorm(9,miu,sigma)
+p3 = 1-pnorm(10,miu,sigma)
+p1
+p2
+p3
+
+#Intento 2
+
+```
+
+## Pregunta 7
+
+```{r}
+miu = 27082
+sigma = 4500
+muestra = 10
+error = sigma/sqrt(muestra)
+
+error
+pnorm(18000,miu,error)
+```
+
+## Pregunta 8
+
+```{r}
+# Intento 1 (Unilateral)
+miu = 20
+error = 4.3
+x_muestral = 22
+alfa = 0.05
+z = (x_muestral-miu)/error
+p = 1-pnorm(z)
+p > alfa
+cat("Debe superar",qnorm(1-alfa),"desviaciones estandar de la media\n")
+cat("Esta a",z,"desviaciones estandar\n")
+cat("Por lo tanto, no se tiene evidencia para rechazar H0")
+```
+```{r}
+# Intento 2  (Bilateral)
+p = pnorm(z)
+p > alfa/2
+p < 1-alfa/2
+cat("Si", alfa/2,"< p <",1-alfa/2,", H0\n")
+cat("P = ",p,"\n")
+cat("Por lo tanto, no se tiene evidencia para rechazar H0")
+```
+
+## Pregunta 9
+
+Si p \> alfa, no se rechaza H0
+
+```{r}
+#Intento 1
+p = 0.0319
+alfa = 0.02
+p > alfa
+```
+
+No se rechaza H0
+
+## Pregunta 10
+
+```{r}
+edad = c(17.2,43.5,30.7,53.1,37.2,21.0,27.6,46.3)
+cas = c(0.19,0.20,0.26,0.16,0.24,0.20,0.18,0.23)
+cor.test(edad,cas,alternative="two.sided",method = "pearson",conf.level=0.95)
+
+```
+
+## Pregunta 11
+
+### Hipótesis y Distribución Muestral (argumente por qué)
+#### Intento 1
+```{r}
+
+miu = 32.1
+muestra = 42
+x_muestra = 31.2
+sigma = 2.1
+alfa = 0.04
+```
+
+Ya que se conoce la desviación estandar de la poblacion o muestra, y se tiene una muestra mayor a 30, se puede considerar como una distribución normal.
+
+H0 = $\mu = 32.1$ H0 = $\mu < 32.1$
+
+### Regla de decisión
+
+```{r}
+low = qnorm(alfa,miu,sigma)
+low
+z_low = (low-miu)/sigma
+z_low
+cat("Si la media muestral es menor que",low,"se rechaza H0 y acepta H1.\n")
+cat("Si la media muestral esta a",z_low,"desviaciones estandar o mas de la media, se rechaza H0 y acepta H1.\n")
+cat("Si el valor p es menor que alfa",alfa,"se rechaza H0 y acepta H1")
+
+```
+
+### Análisis del resultado
+
+```{r}
+low > x_muestra
+cat("La media muestral es mayor que el valor frontera de rechazo.\n")
+
+z_x = (x_muestra-miu)/sigma
+z_x
+abs(z_x) > abs(z_low)
+cat("La media muestral se encuentra a menor desviaciones estandar que el valor frontera.\n")
+
+p = pnorm(z_x)
+p
+alfa > p
+cat("La media muestral tiene un valor p mayor que alfa.\n")
+```
+
+### Decisión Estadística
+
+Dado que no hay evidencia para demostrar H1, se concluye que no hay evidencia para rechazar H0.
+
+### Interprete en el contexto del problema (conteste la pregunta solicitada)
+
+El inspector esta incorrecto, la media muestral de Benceno es estadisticamente insignificante.
+
+## Pregunta 12
+### Intento 1
+H0: $\rho = 0$ H1: $\rho \neq 0$
+
+```{r}
+x = c(400, 750, 770, 800, 850, 1025, 1200, 1225, 1300, 1400, 1475, 1480, 1505, 2200)
+y = c(3.80, 4.00, 4.90, 5.20, 4.00, 3.50, 6.30, 6.88, 7.55, 4.95, 7.80, 4.45, 6.60, 8.90)
+
+qt(x,y,)
+```
+
+Se rechaza cuando p \< alfa o $t \notin [0.40,0.91]$
+
+```{r}
+p = 0.001706
+alfa = 0.06
+t = 4.0178
+low = 0.40
+upr = 0.91
+p < alfa
+low < t && t < upr
+```
+
+Por lo tanto se rechaza H0 con significancia 0.06, y si correlacion estadisticamente significante.
+
+## Pregunta 13
+
+El % de la variación total de Y que es explicado por el modelo de regresión: R\^2 Coef de Determinación Medir la correlación lineal entre dos variables cuantitativas en la muestra: r (Coef de correlacion lineal muestral) Estima en promedio cuanto cambia la variable Y por un cambio unitario en X : B1 Es la ordenada en el origen o indetecepto: B0
+
+## Pregunta 14
+
+```{r}
+x = c(23,45,68,91,114,136,159,182,205,228)
+y = c(53.3,26.9,54.8,33.8,29.9,8.2,17.2,12.2,3.2,11.1)
+
+A = lm(y~x)
+summary(A)
+```
+
+## Pregunta 15
+
+La salud cardio-respiratoria es ampliamente reconocida como un componente importante del bienestar físico general. La medición directa de la inhalación máxima de oxígeno (VO2 máx) es la mejor medición individual, aunque es lenta y cara, por lo que se desea tener una ecuación de predicción a partir de otras mediciones que sean fáciles de determinar. Se desea analizar las siguientes variables para determinar si a partir de ellas se puede estimar la inhalación máxima de oxígeno:
+
+y = inhalación máxima de oxígeno, VO2 máx (L/min)
+
+x1 = peso (kg)
+
+x2 = edad (años)
+
+x3 = tiempo necesario para caminar una milla (min)
+
+x4 = frecuencia cardiaca (pulsaciones por min)
+
+A partir de un número grande de observaciones se encontró que un posible modelo lineal múltiple para estudiantes masculinos está dado por:
+
+y = 5 + 0.01 x1 − 0.05 x2 − 0.13 x3 − 0.01 x4
+
+La interpretación de β2 es que si las demás variables permanecen constantes, se espera que Y=inhalación máxima de óxigeno (VO2 máx) en promedio baje 0.05 por un aumento de un año en la edad de la persona.
+
+-0.05 es B2, por lo que es verdadero.
+
+## Pregunta 16
+
+Errores no son independientes, aparentan ser ciclicos.
+
+## Pregunta 17
+
+```{r}
+Y = c(240,236,290,274,301,316,300,296,267,276,288,261)
+X1 = c(25,31,45,60,65,72,80,84,75,60,50,38)
+X2 = c(24,21,24,25,25,26,25,25,24,25,25,23)
+X3 = c(91,90,88,87,91,94,87,86,88,91,90,89)
+X4 = c(100,95,110,88,94,99,97,96,110,105,100,98)
+
+A = lm(Y~X1+X2+X3+X4)
+summary(A)
+```
+
+$Y = -102.71324 + 0.60537X_1 + 8.92364X_2 + 1.43746X_3+0.01361X_4$
+
+$X_1,X_2,X_3$ son estadisticamente significantes.
+
+```{r}
+x1 = 75
+x2 = 24
+x3 = 90
+x4 = 98
+y = -102.71324 + 0.60537*x1 + 8.92364*x2 + 1.43746*x3+0.01361*x4
+y
+
+cat("Se espera que con los datos datos, la energía consumida sea de:",y)
+```
+## Pregunta 18
+
+```{r}
+#Intento 1
+r = 0.983
+R2 = r^2
+(1-R2)
+
+#Intento 2:
+(1-R2)*100
+```
+

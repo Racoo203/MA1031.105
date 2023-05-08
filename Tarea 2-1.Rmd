@@ -1,0 +1,135 @@
+---
+title: "Tarea 2-1"
+author: "Raúl Correa Ocañas"
+date: "`r Sys.Date()`"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Pregunta 1
+
+```{r}
+x = c(0, 1, 2, 3, 4)
+px = c(0.05, 0.07, 0.23, 0.45, 0.20)
+sum(x*px)
+```
+## Pregunta 4
+```{r}
+p = pnorm(3.1)-pnorm(1.2)
+p
+```
+
+## Pregunta 5
+```{r}
+#Intento 2
+qt(0.99,21)
+```
+
+## Pregunta 6
+```{r}
+miu = 50
+sigma = 12
+muestra = 39
+
+p = pnorm(60,miu,sigma) # proporcion del salon que termino a tiempo
+1-p # proporcion del salon que no termino a tiempo
+muestra*(1-p)
+
+cat("Approx. 8 personas no terminaran")
+```
+## Pregunta 7
+```{r}
+miu = 27082
+sigma = 4500
+muestra = 10
+error = sigma/sqrt(muestra)
+
+error
+pnorm(18000,miu,error)
+```
+
+## Pregunta 8
+```{r}
+miu = 20
+media_muestra = 23
+error = 3.2 # de la muestra
+alfa = 0.025
+z_muestra = (media_muestra-miu)/error
+p = pnorm(z_muestra)
+p > 1-alfa
+p
+1-alfa
+```
+## Pregunta 9
+```{r}
+miu = 23
+
+```
+
+## Pregunta 10
+```{r}
+pib = c(2925,1402,2133,1827,237.3)
+porc = c(75,62,67,43,8)
+
+cor.test(pib,porc)
+```
+## Pregunta 11
+### Hipótesis y Distribución Muestral (argumente por qué)
+```{r}
+
+miu = 32.1
+muestra = 42
+x_muestra = 31.2
+sigma = 2.1
+error = sigma/sqrt(muestra)
+alfa = 0.04
+```
+
+Ya que se conoce la desviación estandar de la poblacion o muestra, y se tiene una muestra mayor a 30, se puede considerar como una distribución normal.
+
+H0 = $\mu = 32.1$ H1 = $\mu < 32.1$
+
+### Regla de decisión
+
+```{r}
+low = qnorm(alfa,miu,error)
+low
+z_low = (low-miu)/error
+z_low
+cat("Si la media muestral es menor que",low,"se rechaza H0 y acepta H1.\n")
+cat("Si la media muestral esta a",z_low,"desviaciones estandar o mas de la media, se rechaza H0 y acepta H1.\n")
+cat("Si el valor p es menor que alfa",alfa,"se rechaza H0 y acepta H1")
+
+```
+
+### Análisis del resultado
+
+```{r}
+low > x_muestra
+cat("La media muestral es menor que el valor frontera de rechazo.\n")
+
+z_x = (x_muestra-miu)/error
+z_x
+abs(z_x) > abs(z_low)
+cat("La media muestral se encuentra a mayor desviaciones estandar que el valor frontera.\n")
+
+p = pnorm(z_x)
+p
+alfa > p
+cat("La media muestral tiene un valor p menor que alfa.\n")
+```
+
+### Decisión Estadística
+
+Hay suficiente evidencia para indicar que se debe rechazar H0
+
+### Interprete en el contexto del problema (conteste la pregunta solicitada)
+
+El inspector esta correcto, la media muestral de Benceno es estadisticamente significante y no se puede tomar la media como 32.1, sino menor.
+
+## Pregunta 12
+
+

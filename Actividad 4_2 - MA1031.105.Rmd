@@ -1,0 +1,41 @@
+---
+title: "Actividad 4 Pt 2 - MA1031.105"
+author: "Raúl Correa Ocañas"
+date: '`r Sys.Date()`'
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+tb = read.csv("PED2022_Muestra.csv")
+M = tb[,c(-1)]
+M
+cor(M)
+```
+
+```{r}
+plot(M, col = "red")
+```
+
+```{r}
+plot(M$O3,M$PM10, col="red",
+     xlab = "O3",
+     ylab = "PM10")
+```
+
+```{r}
+cor.test(M$O3,M$PM10)
+```
+```{r}
+summary(M)
+DS=c(sd(M$NO2),sd(M$NOX))
+names(DS)=c("NO2","NO")
+```
+
+La muestra indica que la correlación se encuentra en 0.4406945, y debe estar entre 0.3830822 y 0.4948916 para no rechazar la hipótesis nula, y hay una correlación entre los niveles de O3 y PM10.
+
